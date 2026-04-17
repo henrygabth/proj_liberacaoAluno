@@ -109,28 +109,14 @@ Este projeto deve ser usado como ponto de partida para criar o projeto que você
 npm i
 ```
 
-3. Faça uma copia do arquivo .env.example e renomeie para .env
 
-obs: Guarde o arquivo .env em local seguro. Este arquivo não será enviado ao github e precisa ser recriado todas as vezes em que o projeto for baixado do gihub
-
-4. Altere as configurações do arquivo .env
-
-| VARIAVEL | DESCRIÇÃO |
-|----------|----------|
-|PORTA |Porta em que a aplicação vai rodar|
-|DBHOST | Local onde seu banco está roando. defina como localhost quando estiver rodando local |
-|DBUSER | Usuário do Banco |
-|DBNAME | nome do banco |
-|DBPASS | Senha para acesso ao banco |
-
-
-5. Rode o projeto
+3. Rode o projeto
 
 ```
 npm run dev
 ```
 
-6. Configure o Git/Github
+4. Configure o Git/Github
 
 O projeto é baixado sem a configuração do git ou github portanto será necessário criar o repositório local(git) e remoto(github) além de subir as atualizações.
 
@@ -151,4 +137,3 @@ Use a pasta docs para colocar todos os documentos relativos ao seu projeto tais 
 * Express
 * MariaDB
 * ejs
->>>>>>> 6a4523b (v1.4 - adicionando funções)
