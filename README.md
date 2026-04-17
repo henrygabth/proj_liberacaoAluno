@@ -94,7 +94,6 @@ Douglas de Cassio Quinzani Gaspar e Renato de Mattos Onofre
 
 ---
 
-=======
 # Projeto Base com MariaDB
 
 Este projeto deve ser usado como ponto de partida para criar o projeto que você vai entregar para o professor. 
