@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 #  Projeto Liberação Aluno
 > **Escola SENAI “Prof. Dr. Euryclides de Jesus Zerbini”**
 > Integração digital entre Responsáveis, Secretaria e Portaria para automação de saída escolar.
@@ -44,24 +43,10 @@ npx degit henrygabth/Projeto_LiberacaoAluno <nome-da-pasta>
 ```bash
 npm i
 ```
----
-
-### 3. Variáveis de Ambiente (.env)
-Crie um arquivo `.env` na raiz do projeto. Configure suas credenciais conforme a tabela:
-
-| Variável | Descrição |
-| :--- | :---: |
-| **PORTA** | Porta de execução |
-| **DBHOST** | Local do banco |
-| **DBUSER** | Usuário do MySQL |
-| **DBNAME** | Nome do Banco de dados |
-| **DBPASS** | Senha do Banco de dados |
-
-obs: O `.env` não é enviado ao GitHub. Você deve recriá-lo sempre que clonar o projeto.
 
 ---
 
-### 4. Como rodar
+### 3. Como rodar
 Para inicializar o servidor, rode o seguinte comando em seu cmd
 
 ```bash
@@ -95,8 +80,6 @@ Douglas de Cassio Quinzani Gaspar e Renato de Mattos Onofre
 
 ---
 
-**Campinas,SP - 2026**
-=======
 # Projeto Base com MariaDB
 
 Este projeto deve ser usado como ponto de partida para criar o projeto que você vai entregar para o professor. 
@@ -126,28 +109,14 @@ Este projeto deve ser usado como ponto de partida para criar o projeto que você
 npm i
 ```
 
-3. Faça uma copia do arquivo .env.example e renomeie para .env
 
-obs: Guarde o arquivo .env em local seguro. Este arquivo não será enviado ao github e precisa ser recriado todas as vezes em que o projeto for baixado do gihub
-
-4. Altere as configurações do arquivo .env
-
-| VARIAVEL | DESCRIÇÃO |
-|----------|----------|
-|PORTA |Porta em que a aplicação vai rodar|
-|DBHOST | Local onde seu banco está roando. defina como localhost quando estiver rodando local |
-|DBUSER | Usuário do Banco |
-|DBNAME | nome do banco |
-|DBPASS | Senha para acesso ao banco |
-
-
-5. Rode o projeto
+3. Rode o projeto
 
 ```
 npm run dev
 ```
 
-6. Configure o Git/Github
+4. Configure o Git/Github
 
 O projeto é baixado sem a configuração do git ou github portanto será necessário criar o repositório local(git) e remoto(github) além de subir as atualizações.
 
@@ -168,4 +137,3 @@ Use a pasta docs para colocar todos os documentos relativos ao seu projeto tais 
 * Express
 * MariaDB
 * ejs
->>>>>>> 6a4523b (v1.4 - adicionando funções)
