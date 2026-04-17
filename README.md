@@ -43,24 +43,10 @@ npx degit henrygabth/Projeto_LiberacaoAluno <nome-da-pasta>
 ```bash
 npm i
 ```
----
-
-### 3. Variáveis de Ambiente (.env)
-Crie um arquivo `.env` na raiz do projeto. Configure suas credenciais conforme a tabela:
-
-| Variável | Descrição |
-| :--- | :---: |
-| **PORTA** | Porta de execução |
-| **DBHOST** | Local do banco |
-| **DBUSER** | Usuário do MySQL |
-| **DBNAME** | Nome do Banco de dados |
-| **DBPASS** | Senha do Banco de dados |
-
-obs: O `.env` não é enviado ao GitHub. Você deve recriá-lo sempre que clonar o projeto.
 
 ---
 
-### 4. Como rodar
+### 3. Como rodar
 Para inicializar o servidor, rode o seguinte comando em seu cmd
 
 ```bash
