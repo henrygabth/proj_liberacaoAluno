@@ -32,9 +32,13 @@ Este sistema visa automatizar a saída escolar, permitindo que os pais autorizem
 ##  Instalação e Configuração
 
 ### 1. Clonar o Projeto
-Utilize o `degit` para baixar o repositório na pasta desejada:
+Utilize o `clone` para baixar o projeto completo, incluindo o (.git), assim sempre vinculado com o repositório e permitindo o `git push/pull`.
 ```bash
-npx degit henrygabth/Projeto_LiberacaoAluno <nome-da-pasta>
+git clone https://github.com/henrygabth/proj_liberacaoAluno
+```
+Além do `clone`, também é possível usar o `degit`, porém, diferente do `clone`, o `degit` baixa apenas a "foto" mais atual dos arquivos (snapshot), sem o histórico (.git) e sem vínculo com o repositório original.
+```bash
+npx degit https://github.com/henrygabth/proj_liberacaoAluno <nome-da-pasta>
 ```
 
 ---
@@ -42,6 +46,18 @@ npx degit henrygabth/Projeto_LiberacaoAluno <nome-da-pasta>
 ### 2. Instalar Dependências
 ```bash
 npm i
+```
+
+```bash
+npm i express
+```
+
+```bash
+npm i bcript
+```
+
+```bash
+npm i jsonwebtoken
 ```
 
 ---
@@ -79,61 +95,3 @@ Douglas de Cassio Quinzani Gaspar e Renato de Mattos Onofre
 **-John Maynard Keynes**
 
 ---
-
-# Projeto Base com MariaDB
-
-Este projeto deve ser usado como ponto de partida para criar o projeto que você vai entregar para o professor. 
-
-# Pré-requisitos
-
-1. O ambiente node deve estar instalado. Se ainda não está instalado baixe o ambiente e instale em https://nodejs.org/pt
-
-2. MariaDB: Para este projeto é necessário acesso a um SGBD MariaDB instalado localmente ou configurado na nuvem. Configure o acesso no arquivo .env
-
-# Instalação do projeto
-
-
-1. Baixe este projeto usando degit
-
-`npx degit henrygabth/Projeto_LiberacaoAluno <pasta>`
-
-
-| TROQUE | POR |
-|----------|----------|
-| `<repositorio>` | nome do repositorio que sera usado como base (este por exemplo)|
-| `<pasta>` | Nome da pasta do seu projeto que será criada automaticamente |
-
-2. Instale todas as dependencias
-
-```
-npm i
-```
-
-
-3. Rode o projeto
-
-```
-npm run dev
-```
-
-4. Configure o Git/Github
-
-O projeto é baixado sem a configuração do git ou github portanto será necessário criar o repositório local(git) e remoto(github) além de subir as atualizações.
-
-## Algumas informações para uso do projeto
-
-Use a pasta docs para colocar todos os documentos relativos ao seu projeto tais como :
-- Diagrama de classe
-- Dicionario de dados
-- Modelo conceitual
-- Scripts de criação do banco
-- Trabalho de conclusão de curso
-
-## Tecnologias utilizadas/configuradas neste projeto
-
-* node
-* Javascript
-* HTML/CSS
-* Express
-* MariaDB
-* ejs
