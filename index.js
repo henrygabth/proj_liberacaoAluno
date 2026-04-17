@@ -1,34 +1,31 @@
 const express = require('express');
-const app = express(); // Vamos usar apenas o 'app'
+const app = express();
 
-// Importação de rotas
-const rotasAlunos = require('./api/alunosRotas'); // Importado aqui
-
-// Variáveis de ambiente
-require('dotenv').config();
 
 // Configurações iniciais
-app.set('views', './views');
-app.set('view engine', 'ejs');
 app.use(express.static('./public'));
 app.use(express.urlencoded({ extended: true }));
-app.use(express.json()); // Configuração de JSON unificada
+app.use(express.json());
 
+// Importação de rotas
+const rotasAlunos = require('./api/alunosRotas');
+
+// Porta configurada no .env ou padrão 3000
 const porta = Number(process.env.PORTA) || 3000;
 
 // Rotas da aplicação
-app.use('/alunos', rotasAlunos); // Rota de alunos adicionada ao app principal
+app.use('/alunos', rotasAlunos);
 
-// Rota de erro (deve vir DEPOIS das outras rotas e ANTES do listen)
+// Rota de erro 404
 app.use((req, res) => {
   res.status(404).render('erro404', {
-    titulo: 'rota não encontrada', 
+    titulo: 'rota não encontrada',
     dados: { titulo: 'rota não encontrada' }
   });
 });
 
-// Iniciar o servidor único
+// Iniciar servidor
 app.listen(porta, () => {
-    console.log('Servidor rodando com sucesso!');
-    console.log('Endereco: http://localhost:' + porta);
+  console.log('Servidor rodando com sucesso!');
+  console.log('Endereco: http://localhost:' + porta);
 });

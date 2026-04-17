@@ -1,21 +1,18 @@
-const express = require('express')
-//Chamar o Controller do Cliente
-const alunos = require('../controllers/alunosController')
-const alunosController = require('../controllers/alunosController')
+const express = require('express');
+const rotas = express.Router();
 
-//Configurar o gerenciador de Rotas com o Router do Express
-const rotas = express.Router()
+// Importar o controller
+const alunosController = require('../controller/alunosController');
 
-//Bloquear a rota de "cadastrar" para ser usada só se tiver o Token
-rotas.post('/cadastrar', alunosController.cadastrar)
-rotas.get('/buscarTodos', alunos.listarTodos);
-//O atualizar tem o parâmetro "id" na URL
-rotas.put('/atualizar/:id', alunos.atualizar);
-rotas.delete('/apagar/:id', alunos.apagar);
-rotas.get('/buscarPorNome', alunos.buscarPorNome);
-rotas.get('/buscarPorId', alunos.buscarPorId);
-rotas.get('/buscarPorMatricula', alunos.buscarPorMatricula);
-rotas.get('/buscarPorTurma', alunos.buscarPorTurma);
-rotas.get('/buscarPorStatus', alunos.buscarPorStatus);
+// Definição das rotas
+rotas.post('/cadastrar', alunosController.cadastrar);
+rotas.get('/buscarTodos', alunosController.listarTodos);
+rotas.put('/atualizar/:id', alunosController.atualizar);
+rotas.delete('/apagar/:id', alunosController.apagar);
+rotas.get('/buscarPorNome', alunosController.buscarPorNome);
+rotas.get('/buscarPorId', alunosController.buscarPorId);
+rotas.get('/buscarPorMatricula', alunosController.buscarPorMatricula);
+rotas.get('/buscarPorTurma', alunosController.buscarPorTurma);
+rotas.get('/buscarPorStatus', alunosController.buscarPorStatus);
 
-module.exports = rotas
+module.exports = rotas;
