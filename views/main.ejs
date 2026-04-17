@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <%- include('./partials/head') %>
+<body>
+
+
+    <header>
+    
+        <!-- O menu da aplicação deve vir aqui -->
+        <%- include('./partials/menu') %>
+        
+    </header>
+    
+
+    <main>
+        <!-- Parte principal da pagina deve vir aqui -->
+
+        <h1 class="titulo1">Rota Raiz</h1>
+
+        <a id='btncadastrar' class="botao1"  href="/cadastrar" >CADASTRAR EXEMPLO</a>
+
+
+        <table class="tabelaExemplo">
+            <thead>
+                <th>
+                    campo1
+                </th>
+                <th>
+                    campo2
+                </th>
+                <th>
+                    campo3
+                </th>
+                <th>
+                    Ações
+                </th>                
+            </thead>
+            <tbody>
+                <!-- inicio da linha -->
+                <% dados.exemplos.forEach((exemplo) => { %>
+
+                    <tr id="<%= exemplo.id_exemplo %>">
+                        <td><%= exemplo.campo1 %></td>
+                        <td><%= exemplo.campo2 %></td>
+                        <td><%= exemplo.campo3 %></td>
+                        <td>
+                            <a class="btn_alterar"  href="/alterarexemplo/<%= exemplo.id_exemplo %>">Alterar</a> 
+                            <a class="btn_exluir" onclick="confirmarAcao(<%= exemplo.id_exemplo %>)">Excluir</a>
+                        </td>
+                    </tr>                    
+
+                <% }); %>
+                <!-- Final da linha -->
+
+            </tbody>
+        </table>
+        
+    </main>
+
+    <%- include('./partials/footer') %>
+    
+    <!-- javascript que roda no front-end da aplicação(pasta public) -->
+     <script src="/js/main.js"></script>
+    <%- include('./partials/debug') %>
+</body>
+</html>

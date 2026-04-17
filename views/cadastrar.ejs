@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <%- include('./partials/head') %>
+<body>
+    <header>
+        <!-- O menu da aplicação deve vir aqui -->
+        <%- include('./partials/menu') %>
+
+        <h1 class="titulo1" ><%= dados.titulo %></h1>
+
+    </header>
+    
+    
+    <main>
+        <!-- Parte principal da pagina deve vir aqui -->
+         <form class="formulario1" action="<%= dados?.exemplo?.id_exemplo ? '/alterarexemplo/' : '/cadastrar' %>" method="POST">
+
+            <% if(dados?.exemplo?.id_exemplo){%>
+                <input type="hidden" name="id_exemplo" value="<%= dados.exemplo.id_exemplo %>">
+            <%}%>
+            
+            <div class="formEntrada">
+                <label for="campo1">Campo 1</label>
+                <input id="campo1" name="campo1" type="text" placeholder="Digite o XXXX aqui" value="<%= dados?.exemplo?.campo1 || '' %>">
+            </div>
+            <div class="formEntrada">
+                <label for="campo2">Campo 2</label>
+                <input id="campo2" name="campo2" type="text"  placeholder="Digite o XXXX aqui" value="<%= dados?.exemplo?.campo2 || '' %>"  >
+            </div>
+
+            <div class="formEntrada">
+                <label for="campo3">Campo 3</label>
+                <input id="campo3" name="campo3" type="text"  placeholder="Digite o XXXX aqui" value="<%= dados?.exemplo?.campo3 || '' %>" >
+            </div>
+
+            <input class="formBotao" type="submit" value="<%= dados?.exemplo?.id_exemplo ? 'Alterar' : 'Cadastrar' %>">
+            <input class="formBotao" type="submit" value="Cancelar">
+        </form>
+        
+    </main>
+    
+    <%- include('./partials/footer') %>
+
+    <!-- javascript que roda no front-end da aplicação(pasta public) -->
+     <script src="/js/main.js"></script>
+    
+    <!-- mostra a variavel dados que foi enviada para view -->
+     <%- include('./partials/debug') %>
+</body>
+</html>

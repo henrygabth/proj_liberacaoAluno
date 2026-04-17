@@ -1,0 +1,27 @@
+{
+  "name": "projetoliberacao",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "CodeMasters",
+  "license": "ISC",
+  "description": "<<<<<<< HEAD #  Projeto Liberação Aluno > **Escola SENAI “Prof. Dr. Euryclides de Jesus Zerbini”** > Integração digital entre Responsáveis, Secretaria e Portaria para automação de saída escolar.",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mysql2": "^3.19.1"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/henrygabth/proj_liberacaoAluno.git"
+  },
+  "bugs": {
+    "url": "https://github.com/henrygabth/proj_liberacaoAluno/issues"
+  },
+  "homepage": "https://github.com/henrygabth/proj_liberacaoAluno#readme"
+}

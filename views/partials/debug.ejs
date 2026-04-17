@@ -1,0 +1,6 @@
+<script>
+  // Este script serve para identificar o que é enviado para a view.
+  // Para observar o que foi enviado use a console do navegador (F12)
+  dadosEnviados = JSON.parse('<%- JSON.stringify(dados) %>');
+  console.log("Dados disponíveis na view:", dadosEnviados);
+</script>
