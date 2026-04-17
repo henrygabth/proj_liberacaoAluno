@@ -94,7 +94,6 @@ Douglas de Cassio Quinzani Gaspar e Renato de Mattos Onofre
 
 ---
 
-**Campinas,SP - 2026**
 =======
 # Projeto Base com MariaDB
 
