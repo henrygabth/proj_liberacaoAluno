@@ -25,7 +25,7 @@ Este sistema visa automatizar a saída escolar, permitindo que os pais autorizem
 ##  Pré-requisitos
 
 1. **Node.js:** O ambiente deve estar instalado. [Baixe aqui](https://nodejs.org/pt).
-2. **MySQL:** É necessário acesso a um SGBD MySQL instalado localmente.
+2. **MySQL:** É necessário acesso a um SGBD MySQL instalado localmente. [Baixe aqui](https://www.mysql.com/downloads/)
 
 ---
 
