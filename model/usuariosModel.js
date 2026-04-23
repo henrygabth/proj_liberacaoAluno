@@ -1,13 +1,13 @@
 const banco = require('../config/banco');
 
 const usuarios = {
-    cadastrar: async (nome, cpf, email, telefone, senha, tipo_usuario, ativo, data_criacao, data_atualizacao) => {
+    cadastrar: async (nome, cpf, email, telefone, senha, tipo_usuario, status) => {
         const sql = `
-            INSERT INTO usuarios (nome, cpf, email, telefone, senha, tipo_usuario, ativo, data_criacao, data_atualizacao) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO usuarios (nome, cpf, email, telefone, senha, tipo_usuario, status) 
+            VALUES (?, ?, ?, ?, ?, ?, ?)
         `;
         const [resultado] = await banco.query(sql, [
-            nome, cpf, email, telefone, senha, tipo_usuario, ativo, data_criacao, data_atualizacao
+            nome, cpf, email, telefone, senha, tipo_usuario, status
         ]);
         return resultado.insertId;
     },

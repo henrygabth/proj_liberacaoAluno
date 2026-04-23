@@ -2,24 +2,29 @@ const usuarios = require('../model/usuariosModel');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-const SEGREDO = "chave_super_secreta";
+const SEGREDO = 'chave_secreta_escola';
 
 const usuariosController = {
     cadastrar: async (req, res) => {
         try {
-            const { nome, cpf, email, telefone, senha, tipo_usuario, ativo, data_criacao, data_atualizacao } = req.body;
+            const { nome, cpf, email, telefone, senha, tipo_usuario, status } = req.body;
 
-            if (!nome || !cpf || !email || !telefone || !senha || !tipo_usuario || ativo === undefined) {
+            if (!nome || !cpf || !email || !telefone || !senha || !tipo_usuario) {
                 return res.status(400).json({ erro: "Todos os campos são obrigatórios" });
             }
 
             const senhaHash = await bcrypt.hash(senha, 10);
 
             const id_usuario = await usuarios.cadastrar(
-                nome, cpf, email, telefone, senhaHash, tipo_usuario, ativo, data_criacao, data_atualizacao
+                nome, cpf, email, telefone, senhaHash, tipo_usuario, status || '1'
             );
 
-            return res.status(201).json({ mensagem: `Usuário ${id_usuario} cadastrado com sucesso` });
+            const token = jwt.sign(
+                { id: id_usuario, email: email },
+                SEGREDO,
+                { expiresIn: '1h' }
+            );
+            return res.status(201).json({ mensagem: `Usuário ${id_usuario} cadastrado com sucesso`, token });
         } catch (error) {
             console.error(error);
             return res.status(500).json({ erro: "Erro ao cadastrar usuário", detalhes: error.message });
@@ -34,7 +39,6 @@ const usuariosController = {
                 return res.status(400).json({ erro: 'Email e senha são obrigatórios.' });
             }
 
-            // Busca usuário pelo email usando a função corrigida no Model
             const usuario = await usuarios.buscarPorEmail(email);
 
             if (!usuario) {
@@ -78,9 +82,8 @@ const usuariosController = {
 
     buscarPorId: async (req, res) => {
         try {
-            // Geralmente ID vem por req.params.id, mas mantive req.body conforme seu código
             const { id_usuario } = req.body;
-            const resultado = await usuarios.buscarPorId(id_usuario); // Corrigido de 'alunos' para 'usuarios'
+            const resultado = await usuarios.buscarPorId(id_usuario);
 
             if (!resultado) {
                 return res.status(404).json({ "resultado": "ID não encontrado" });

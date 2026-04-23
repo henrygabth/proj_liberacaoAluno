@@ -8,6 +8,7 @@
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     
     <link rel='stylesheet' type='text/css' media='screen' href='./css/style.css'>
+    <script src="./js/general/index.js"></script>
 </head>
 
 <body class="centralize">
@@ -17,23 +18,41 @@
             <input type="email" placeholder="seu@email.com" id="email" onchange="onChangeEmail()"/>
             <div class="error" id="email-required-error">Email é obrigatório</div>
             <div class="error" id="email-invalid-error">Email é invalido</div>
-        </div>
         <div class="form-field">
             <div><label>Senha</label></div>
             <input type="password" placeholder="Senha" id="password" onchange="onChangePassword()"/>
             <div class="error" id="password-required-error">Senha é obrigatório</div>
-            <div class="error" id="password-min-length-error">Senha deve ter no mínimo 6 caracteres</div>
-        </div> 
+            <div class="error" id="password-min-length-error">Senha deve ter no mínimo 6 caracteres</div> 
         <div class="form-field">
             <div><label>Confimar senha</label></div>
             <input type="password" placeholder="Confimar senha" id="confirmPassword" onchange="onChangeConfirmPassword()"/>
             <div class="error" id="password-doesnt-match-error">Senha e Confimar senha devem ser iguais</div>
+        <div class="form-field">
+            <div><label>Nome Completo</label></div>
+            <input type="text" id="nome" placeholder="João Silva" oninput="updateButtonState()"/>
+            <div class="error" id="nome-required-error">Nome é obrigatório</div>
+        <div class="form-field">
+            <div><label>CPF</label></div>
+            <input type="text" id="cpf" placeholder="123.456.789-00" onchange="updateButtonState()"/>
+            <div class="error" id="cpf-required-error">CPF é obrigatório</div>
+        <div class="form-field">
+            <div><label>Telefone</label></div>
+            <input type="tel" id="telefone" placeholder="(11) 99999-9999" onchange="updateButtonState()"/>
+            <div class="error" id="telefone-required-error">Telefone é obrigatório</div>
+        <div class="form-field">
+            <div><label>Tipo de Usuário</label></div>
+            <select id="tipo_usuario" onchange="updateButtonState()">
+                <option value="PAI">Pai</option>
+                <option value="SECRETARIA">Secretaria</option>
+                <option value="PORTEIRO">Porteiro</option>
+                <option value="ADMIN">Admin</option>
+            </select>
         </div>
         <div>
             <button type="button" class="enter-btn" disabled="true" onclick="register()" id="register-button">Registrar</button>
         </div>
         <div>
-            <button type="button" class="clear">Login</button>
+            <button type="button" class="clear" onclick="window.location.href='login.html'">Login</button>
         </div>
     </form>
 </body>
