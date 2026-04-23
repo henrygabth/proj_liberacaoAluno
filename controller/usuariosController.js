@@ -2,14 +2,14 @@ const usuarios = require('../model/usuariosModel');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-const SEGREDO = "chave_super_secreta"; // ideal usar process.env.SEGREDO
+const SEGREDO = "chave_super_secreta";
 
 const usuariosController = {
     cadastrar: async (req, res) => {
         try {
             const { nome, cpf, email, telefone, senha, tipo_usuario, ativo, data_criacao, data_atualizacao } = req.body;
 
-            if (!nome || !cpf || !email || !telefone || !senha || !tipo_usuario || ativo === undefined || !data_atualizacao) {
+            if (!nome || !cpf || !email || !telefone || !senha || !tipo_usuario || ativo === undefined) {
                 return res.status(400).json({ erro: "Todos os campos são obrigatórios" });
             }
 
@@ -30,22 +30,15 @@ const usuariosController = {
         try {
             const { email, senha } = req.body;
 
-            if (!email || !senha || senha.length < 6) {
-                return res.status(400).json({ erro: 'Email e senha (mín. 6 chars) são obrigatórios.' });
+            if (!email || !senha) {
+                return res.status(400).json({ erro: 'Email e senha são obrigatórios.' });
             }
 
-            // busca usuário pelo email
-            const usuario = await usuarios.buscarPorUsuario(email);
+            // Busca usuário pelo email usando a função corrigida no Model
+            const usuario = await usuarios.buscarPorEmail(email);
 
             if (!usuario) {
                 return res.status(404).json({ erro: 'Usuário não encontrado.' });
-            }
-
-            if (!usuario.senha) {
-                console.error("ERRO: O usuario foi encontrado, mas a propriedade 'senha' está undefined.", usuario);
-                return res.status(500).json({
-                    erro: 'Erro interno: A senha não foi retornada pelo banco de dados. Verifique o usuariosModel.'
-                });
             }
 
             const senhaValida = await bcrypt.compare(senha, usuario.senha);
@@ -65,8 +58,36 @@ const usuariosController = {
                 token
             });
         } catch (error) {
-            console.log(error);
+            console.error(error);
             res.status(500).json({ erro: error.message });
+        }
+    },
+
+    buscarPorNome: async (req, res) => {
+        try {
+            const { nome } = req.body;
+            const resultado = await usuarios.buscarPorNome(nome);
+            if (!resultado) {
+                return res.status(404).json({ "resultado": "Usuário não encontrado" });
+            }
+            res.status(200).json(resultado);
+        } catch (error) {
+            res.status(500).json({ "erro": "Erro ao buscar por nome" });
+        }
+    },
+
+    buscarPorId: async (req, res) => {
+        try {
+            // Geralmente ID vem por req.params.id, mas mantive req.body conforme seu código
+            const { id_usuario } = req.body;
+            const resultado = await usuarios.buscarPorId(id_usuario); // Corrigido de 'alunos' para 'usuarios'
+
+            if (!resultado) {
+                return res.status(404).json({ "resultado": "ID não encontrado" });
+            }
+            res.status(200).json(resultado);
+        } catch (error) {
+            res.status(500).json({ "erro": "Erro ao buscar por ID" });
         }
     }
 };

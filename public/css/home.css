@@ -297,3 +297,20 @@ body {
 .btn-action:hover {
     color: var(--senai-red);
 }
+
+/* --- ESTILOS DO PARTICLES.JS --- */
+#particles-js {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;  /* Ocupa 100% da largura da tela */
+    height: 100vh; /* Ocupa 100% da altura da tela */
+    z-index: -1;   /* Joga as partículas para o fundo, atrás dos botões e cards */
+    background-color: var(--bg-color); /* Mantém a cor de fundo padrão do seu sistema */
+}
+
+/* Como passamos a cor de fundo para o #particles-js, 
+precisamos garantir que o body fique transparente para não tampar a animação */
+body {
+    background-color: transparent !important; 
+}

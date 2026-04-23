@@ -5,9 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Solicitações</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="./css/home.css" rel="stylesheet">
     <link href="./css/global.css" rel="stylesheet">
 </head>
 <body>
+
+    <div id="particles-js"></div>
 
     <nav class="navbar">
         <div class="menu-toggle" id="menuToggle">
@@ -37,8 +40,7 @@
         </ul>
     </aside>
 
-<main class="main-content" id="mainContent">
-<main class="main-content" id="mainContent">
+    <main class="main-content" id="mainContent">
         
         <section id="tela-inicio">
             <h1>Bem-vindo ao Portal de Pais</h1>
@@ -135,6 +137,7 @@
                 </div>
             </div>
         </section>
+
         <section id="tela-conta" style="display: none;">
             <h1>Minha Conta</h1>
             <div class="card">
@@ -144,22 +147,22 @@
                 <form id="formConta" class="form-grid">
                     <div class="input-group full-width">
                         <label for="nomeResponsavel">Nome Completo</label>
-                        <input type="text" id="nomeResponsavel" value="" placeholder="Nome completo" required>
+                        <input type="text" id="nomeResponsavel" value="Maria da Silva" required>
                     </div>
 
                     <div class="input-group">
                         <label for="cpfResponsavel">CPF</label>
-                        <input type="text" id="cpfResponsavel" value="" placeholder="CPF" style="background-color: #f0f0f0; cursor: not-allowed;" title="O CPF não pode ser alterado pelo portal">
+                        <input type="text" id="cpfResponsavel" value="123.456.789-00" disabled style="background-color: #f0f0f0; cursor: not-allowed;" title="O CPF não pode ser alterado pelo portal">
                     </div>
 
                     <div class="input-group">
-                        <label for="telefoneResponsavel">Telefone / WhatsApp (com DDD) </label>
-                        <input type="tel" id="telefoneResponsavel" value="" placeholder="Telefonee" required>
+                        <label for="telefoneResponsavel">Telefone / WhatsApp</label>
+                        <input type="tel" id="telefoneResponsavel" value="(19) 98765-4321" required>
                     </div>
 
                     <div class="input-group full-width">
                         <label for="emailResponsavel">E-mail</label>
-                        <input type="email" id="emailResponsavel" value="" placeholder="Email" required>
+                        <input type="email" id="emailResponsavel" value="maria.silva@email.com" required>
                     </div>
 
                     <div class="input-group">
@@ -180,7 +183,61 @@
                 </form>
             </div>
         </section>
-
     </main>
+
+    <script>
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('mainContent');
+
+        menuToggle.addEventListener('click', () => {
+            menuToggle.classList.toggle('active');
+            sidebar.classList.toggle('open');
+            mainContent.classList.toggle('shifted');
+        });
+
+        function mostrarTela(idTela) {
+            document.getElementById('tela-inicio').style.display = 'none';
+            document.getElementById('tela-criar').style.display = 'none';
+            document.getElementById('tela-historico').style.display = 'none';
+            document.getElementById('tela-conta').style.display = 'none';
+
+            document.getElementById(idTela).style.display = 'block';
+
+            if (window.innerWidth <= 768) {
+                sidebar.classList.remove('open');
+                menuToggle.classList.remove('active');
+            }
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script>
+        particlesJS("particles-js", {
+            "particles": {
+                "number": { "value": 150, "density": { "enable": true, "value_area": 800 } },
+                "color": { "value": "#E52207" }, /* Vermelho SENAI */
+                "shape": { "type": "circle" },
+                "opacity": { "value": 0.5 },
+                "size": { "value": 3, "random": true },
+                "line_linked": {
+                    "enable": true,
+                    "distance": 150,
+                    "color": "#0A192F", 
+                    "opacity": 0.2,
+                    "width": 1
+                },
+                "move": { "enable": true, "speed": 2 }
+            },
+            "interactivity": {
+                "detect_on": "canvas",
+                "events": {
+                    "onhover": { "enable": true, "mode": "grab" },
+                    "onclick": { "enable": true, "mode": "push" }
+                }
+            },
+            "retina_detect": true
+        });
+    </script>
 </body>
 </html>
