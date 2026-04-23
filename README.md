@@ -45,19 +45,19 @@ npx degit https://github.com/henrygabth/proj_liberacaoAluno <nome-da-pasta>
 
 ### 2. Instalar Dependências
 ```bash
-npm i
+npm install
 ```
 
 ```bash
-npm i express
+npm install express
 ```
 
 ```bash
-npm i bcript
+npm install bcript
 ```
 
 ```bash
-npm i jsonwebtoken
+npm install jsonwebtoken
 ```
 
 ---
