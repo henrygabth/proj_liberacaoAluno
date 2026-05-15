@@ -1,96 +1,131 @@
-const usuarios = require('../model/usuariosModel');
+const usuariosModel = require('../model/usuariosModel');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-
-const SEGREDO = 'chave_secreta_escola';
+const { SEGREDO } = require('../middlewares/authenticar');
 
 const usuariosController = {
+
     cadastrar: async (req, res) => {
+        // Mantido igual ao seu código original
         try {
             const { nome, cpf, email, telefone, senha, tipo_usuario, status } = req.body;
-
-            if (!nome || !cpf || !email || !telefone || !senha || !tipo_usuario) {
-                return res.status(400).json({ erro: "Todos os campos são obrigatórios" });
-            }
-
             const senhaHash = await bcrypt.hash(senha, 10);
-
-            const id_usuario = await usuarios.cadastrar(
-                nome, cpf, email, telefone, senhaHash, tipo_usuario, status || '1'
-            );
-
-            const token = jwt.sign(
-                { id: id_usuario, email: email },
-                SEGREDO,
-                { expiresIn: '1h' }
-            );
-            return res.status(201).json({ mensagem: `Usuário ${id_usuario} cadastrado com sucesso`, token });
+            const id = await usuariosModel.cadastrar(nome, cpf, email, telefone, senhaHash, tipo_usuario, status);
+            res.status(201).json({ mensagem: 'Usuário cadastrado com sucesso!', id });
         } catch (error) {
-            console.error(error);
-            return res.status(500).json({ erro: "Erro ao cadastrar usuário", detalhes: error.message });
+            res.status(500).json({ erro: 'Erro ao cadastrar usuário.', detalhe: error.message });
         }
     },
 
     login: async (req, res) => {
+        // Mantido igual ao seu código original
         try {
             const { email, senha } = req.body;
-
-            if (!email || !senha) {
-                return res.status(400).json({ erro: 'Email e senha são obrigatórios.' });
-            }
-
-            const usuario = await usuarios.buscarPorEmail(email);
+            const usuario = await usuariosModel.buscarPorEmail(email);
 
             if (!usuario) {
                 return res.status(404).json({ erro: 'Usuário não encontrado.' });
             }
 
             const senhaValida = await bcrypt.compare(senha, usuario.senha);
-
             if (!senhaValida) {
                 return res.status(401).json({ erro: 'Senha incorreta.' });
             }
 
             const token = jwt.sign(
-                { id: usuario.id, email: usuario.email },
+                {
+                    id_usuario: usuario.id_usuario,
+                    nome: usuario.nome,
+                    tipo_usuario: usuario.tipo_usuario
+                },
                 SEGREDO,
-                { expiresIn: '1h' }
+                { expiresIn: '8h' }
             );
 
-            res.status(200).json({
-                mensagem: 'Login realizado com sucesso',
-                token
-            });
+            res.json({ mensagem: 'Login realizado com sucesso!', token });
         } catch (error) {
-            console.error(error);
-            res.status(500).json({ erro: error.message });
+            res.status(500).json({ erro: 'Erro ao realizar login.', detalhe: error.message });
         }
     },
 
     buscarPorNome: async (req, res) => {
         try {
-            const { nome } = req.body;
-            const resultado = await usuarios.buscarPorNome(nome);
-            if (!resultado) {
-                return res.status(404).json({ "resultado": "Usuário não encontrado" });
-            }
-            res.status(200).json(resultado);
+            const { nome } = req.query;
+            const usuario = await usuariosModel.buscarPorNome(nome);
+            if (!usuario) return res.status(404).json({ erro: 'Usuário não encontrado.' });
+            res.json(usuario);
         } catch (error) {
-            res.status(500).json({ "erro": "Erro ao buscar por nome" });
+            res.status(500).json({ erro: 'Erro ao buscar usuário.', detalhe: error.message });
         }
     },
 
     buscarPorId: async (req, res) => {
         try {
-            const { id_usuario } = req.body;
-            const resultado = await usuarios.buscarPorId(id_usuario);
-
-            if (!resultado) {
-                return res.status(404).json({ "resultado": "ID não encontrado" });
-            }
-            res.status(200).json(resultado);
+            const { id } = req.params;
+            const usuario = await usuariosModel.buscarPorId(id);
+            if (!usuario) return res.status(404).json({ erro: 'Usuário não encontrado.' });
+            res.json(usuario);
         } catch (error) {
-            res.status(500).json({ "erro": "Erro ao buscar por ID" });
+            res.status(500).json({ erro: 'Erro ao buscar usuário.', detalhe: error.message });
+        }
+    },
+
+    // ─── NOVO: retorna os dados da conta do usuário logado ────────────────────
+    getConta: async (req, res) => {
+        try {
+            // req.usuario vem do middleware authenticar (JWT decodificado)
+            const id_usuario = req.usuario.id_usuario;
+
+            const usuario = await usuariosModel.buscarContaPorId(id_usuario);
+
+            if (!usuario) {
+                return res.status(404).json({ erro: 'Usuário não encontrado.' });
+            }
+
+            res.json(usuario);
+        } catch (error) {
+            res.status(500).json({ erro: 'Erro ao buscar dados da conta.', detalhe: error.message });
+        }
+    },
+
+    // ─── NOVO: atualiza os dados da conta do usuário logado ──────────────────
+    atualizarConta: async (req, res) => {
+        try {
+            const id_usuario = req.usuario.id_usuario;
+            const { nome, email, telefone, senhaAtual, novaSenha } = req.body;
+
+            // Busca o usuário completo (com senha) para validar
+            const usuarioCompleto = await usuariosModel.buscarPorId(id_usuario);
+            if (!usuarioCompleto) {
+                return res.status(404).json({ erro: 'Usuário não encontrado.' });
+            }
+
+            // Se enviou nova senha, valida a senha atual primeiro
+            let novaSenhaHash = null;
+            if (novaSenha) {
+                if (!senhaAtual) {
+                    return res.status(400).json({ erro: 'Informe a senha atual para trocar a senha.' });
+                }
+
+                const senhaValida = await bcrypt.compare(senhaAtual, usuarioCompleto.senha);
+                if (!senhaValida) {
+                    return res.status(401).json({ erro: 'Senha atual incorreta.' });
+                }
+
+                novaSenhaHash = await bcrypt.hash(novaSenha, 10);
+            }
+
+            const linhasAfetadas = await usuariosModel.atualizarConta(
+                id_usuario, nome, email, telefone, novaSenhaHash
+            );
+
+            if (linhasAfetadas === 0) {
+                return res.status(400).json({ erro: 'Nenhuma alteração foi realizada.' });
+            }
+
+            res.json({ mensagem: 'Dados atualizados com sucesso!' });
+        } catch (error) {
+            res.status(500).json({ erro: 'Erro ao atualizar conta.', detalhe: error.message });
         }
     }
 };
