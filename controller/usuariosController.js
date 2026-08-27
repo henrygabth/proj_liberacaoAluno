@@ -6,22 +6,24 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const { SEGREDO } = require('../middlewares/authenticar');
+const { OAuth2Client } = require("google-auth-library");
 
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || "725327633780-mt7ue9m9s39dgcq4n80487s82aheh9aq.apps.googleusercontent.com";
+const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID);
+
+const EMAIL_SISTEMA = process.env.EMAIL_USER || "portariainteligente950@gmail.com";
 const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 587,
-    secure: false, // usa STARTTLS na porta 587 (mais estável que 465 em algumas redes)
-    family: 4,      // força IPv4 - evita ECONNREFUSED em redes com IPv6 mal configurado
-    tls: {
-        rejectUnauthorized: false // contorna antivírus/proxy que interceptam TLS com certificado próprio
-    },
+    service: 'gmail',
     auth: {
-        user: process.env.EMAIL_USER || 'seu.email@gmail.com',
-        pass: process.env.EMAIL_PASS || 'sua-senha-de-app'
+        user: EMAIL_SISTEMA,
+        pass: process.env.EMAIL_PASS
+    },
+    tls: {
+        rejectUnauthorized: false,
+        minVersion: "TLSv1.2"
     }
 });
 
-// Gera uma senha temporária aleatória e diferente a cada chamada (não é uma senha fixa/padrão)
 function gerarSenhaAleatoria() {
     return crypto.randomBytes(6).toString('base64')
         .replace(/[^a-zA-Z0-9]/g, '')
@@ -133,6 +135,56 @@ const usuariosController = {
         }
     },
 
+    loginGoogle: async (req, res) => {
+        try {
+            const { idToken } = req.body;
+            if (!idToken) return res.status(400).json({ erro: 'Token do Google não fornecido.' });
+
+            const ticket = await googleClient.verifyIdToken({
+                idToken,
+                audience: GOOGLE_CLIENT_ID
+            });
+
+            const payload = ticket.getPayload();
+            const email = payload.email;
+
+            let usuario = await usuariosModel.buscarPorEmail(email);
+
+            if (!usuario) {
+                return res.status(404).json({ erro: 'Nenhuma conta cadastrada encontrada para este e-mail do Google.' });
+            }
+
+            const token = jwt.sign(
+                { id_usuario: usuario.id_usuario, tipo_usuario: usuario.tipo_usuario, nome: usuario.nome },
+                SEGREDO,
+                { expiresIn: '8h' }
+            );
+
+            let redirecionarPara = 'home.html';
+            const tipo = (usuario.tipo_usuario || '').toUpperCase();
+
+            if (tipo === 'SECRETARIA' || tipo === 'ADMIN') {
+                redirecionarPara = 'secretaria.html';
+            } else if (tipo === 'PORTARIA' || tipo === 'PORTEIRO') {
+                redirecionarPara = 'portaria.html';
+            }
+
+            return res.json({
+                mensagem: 'Autenticação via Google realizada com sucesso!',
+                token,
+                redirecionarPara,
+                usuario: {
+                    id_usuario: usuario.id_usuario,
+                    nome: usuario.nome,
+                    tipo_usuario: usuario.tipo_usuario
+                }
+            });
+        } catch (error) {
+            console.error('Erro na autenticação do Google:', error);
+            return res.status(401).json({ erro: 'Token do Google inválido ou expirado.' });
+        }
+    },
+
     buscarPorNome: async (req, res) => {
         try {
             const { nome } = req.query;
@@ -209,7 +261,7 @@ const usuariosController = {
             const linkRecuperacao = `${baseUrl}/reset_password.html?token=${tokenReset}`;
 
             const mailOptions = {
-                from: `"Controle de Saídas" <${process.env.EMAIL_USER || 'seu.email@gmail.com'}>`,
+                from: `"Controle de Saídas" <${EMAIL_SISTEMA}>`,
                 to: usuario.email,
                 subject: '🔒 Redefinição de Senha - Controle de Saídas',
                 html: `<p>Olá <strong>${usuario.nome}</strong>, para redefinir sua senha acesse o link: <a href="${linkRecuperacao}">${linkRecuperacao}</a></p>`
@@ -243,8 +295,6 @@ const usuariosController = {
         }
     },
 
-    // SECRETARIA: Cria a conta de um responsável (Pai), gera senha única e vincula ao aluno.
-    // Ninguém de fora consegue criar essa conta sozinho — só quem está logado como SECRETARIA/ADMIN.
     criarResponsavel: async (req, res) => {
         try {
             const { nome, cpf, email, telefone, nome_aluno, turma_id, parentesco } = req.body;
@@ -258,24 +308,20 @@ const usuariosController = {
                 return res.status(400).json({ erro: 'Já existe uma conta cadastrada com este e-mail.' });
             }
 
-            // 1. Gera uma senha temporária única para esta conta
             const senhaTemporaria = gerarSenhaAleatoria();
             const senhaHash = await bcrypt.hash(senhaTemporaria, 10);
 
-            // 2. Cria a conta do responsável (tipo PAI)
             const usuario_id = await usuariosModel.cadastrar(
                 nome, cpf, email, telefone, senhaHash, 'PAI', '1'
             );
 
-            // 3. Localiza o aluno (ou cria, se ainda não existir cadastrado) e vincula
             const aluno_id = await alunosModel.buscarOuCriar(nome_aluno, turma_id || null);
             await responsaveisAlunosModel.vincular(usuario_id, aluno_id, parentesco || 'Responsável');
 
-            // 4. Envia a senha temporária por e-mail
             let emailEnviado = true;
             try {
                 await transporter.sendMail({
-                    from: `"Controle de Saídas" <${process.env.EMAIL_USER || 'seu.email@gmail.com'}>`,
+                    from: `"Controle de Saídas" <${EMAIL_SISTEMA}>`,
                     to: email,
                     subject: '🏫 Sua conta de acesso foi criada',
                     html: `
@@ -298,8 +344,6 @@ const usuariosController = {
                     : `Conta criada, mas não foi possível enviar o e-mail. Informe a senha manualmente.`
             };
 
-            // Se o e-mail falhou (ex: credenciais de e-mail não configuradas no .env),
-            // devolve a senha na resposta para a secretaria não ficar sem saída.
             if (!emailEnviado) {
                 resposta.senha_temporaria = senhaTemporaria;
             }
