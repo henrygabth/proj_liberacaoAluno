@@ -12,18 +12,23 @@ const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || "725327633780-mt7ue9m9s
 const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID);
 
 const EMAIL_SISTEMA = process.env.EMAIL_USER || "portariainteligente950@gmail.com";
+
+// Transporter único utilizando configurações avançadas para estabilidade (IPv4 e STARTTLS)
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false, // STARTTLS
+    family: 4,      // Força IPv4
+    tls: {
+        rejectUnauthorized: false
+    },
     auth: {
         user: EMAIL_SISTEMA,
         pass: process.env.EMAIL_PASS
-    },
-    tls: {
-        rejectUnauthorized: false,
-        minVersion: "TLSv1.2"
     }
 });
 
+// Gera uma senha temporária aleatória
 function gerarSenhaAleatoria() {
     return crypto.randomBytes(6).toString('base64')
         .replace(/[^a-zA-Z0-9]/g, '')

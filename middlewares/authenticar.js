@@ -14,13 +14,21 @@ const auth = (req, res, next) => {
 
     try {
         const decoded = jwt.verify(token, SEGREDO);
+ 
         req.usuario = decoded;
+
+        req.usuario = decoded; // Armazena os dados do usuário logado na requisição
+ 
         next();
     } catch (error) {
         return res.status(401).json({ erro: 'Token inválido ou expirado.' });
     }
 };
 
+ 
+
+// Restringe uma rota a determinados papéis (ex: apenas SECRETARIA ou ADMIN)
+ 
 const exigirPapel = (...papeisPermitidos) => {
     return (req, res, next) => {
         const papel = (req.usuario?.tipo_usuario || '').toUpperCase();
