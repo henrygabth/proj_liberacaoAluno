@@ -16,33 +16,52 @@ header button {
     align-items: center;
 }
 
+/* --- TELA DE CARREGAMENTO (AJUSTADA) --- */
 .loading {
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.7); /* Fundo um pouco mais escuro para destaque */
     position: fixed;
     width: 100%;
     height: 100%;
     top: 0;
+    left: 0;
+    display: flex;         /* Adicionado para centralizar o texto/ícone no meio da tela */
+    justify-content: center;
+    align-items: center;
+    color: white;
+    z-index: 9999;         /* Garante que fique por cima da Navbar e Sidebar */
 }
 
-.loading label {
+.loading label, 
+.loading div {
     font-size: 24px;
+    font-weight: bold;
+}
+
+/* --- COMPORTAMENTO GERAL DE BOTÕES --- */
+button {
+    cursor: pointer;
+    transition: opacity 0.3s ease, transform 0.2s ease;
 }
 
 button:active {
     opacity: 0.8;
+    transform: scale(0.98); /* Efeito de "clique" para afundar o botão */
 }
 
 button[disabled] {
-    opacity: 0.7;
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
 }
 
+/* --- BOTÃO FLUTUANTE (FAB) --- */
 button.fab {
     width: 54px;
     height: 54px;
-    border-radius: 50px;
+    border-radius: 50%; /* 50% garante um círculo perfeito */
     border: none;
     font-size: 24px;
-    box-shadow: 2px 2px 2px gray;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
 }
 
 button.fab.fixed {
@@ -57,43 +76,59 @@ button.fab.right {
     right: 32px;
 }
 
+/* --- BOTÕES DE LOGIN E CADASTRO --- */
 .clear {
     background-color: transparent;
     border: none;
-    color: white;
+    color: var(--primary-blue, #0052cc); /* Usa o azul do tema */
+    font-weight: 600;
 }
 
 .enter-btn {
-    background-color: white;
+    background-color: var(--primary-blue, #0052cc);
     border: none;
-    color: rgb(45, 211, 111);
+    color: white;
+    border-radius: 6px;
+    font-weight: bold;
 }
 
 .register-btn {
     background-color: transparent;
-    color: white;
-    border: 1px solid white;
+    color: var(--primary-blue, #0052cc);
+    border: 1px solid var(--primary-blue, #0052cc);
+    border-radius: 6px;
+    font-weight: bold;
 }
 
+/* --- MENSAGENS DE ERRO --- */
 .error {
-    background-color: red;
+    background-color: #ff4d4d; /* Vermelho mais suave */
     color: white;
     display: none;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 14px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(255, 77, 77, 0.3);
 }
 
+/* --- CAMPOS DE FORMULÁRIO (TELA DE LOGIN) --- */
 .form-field {
-    margin-bottom: 10px;
+    margin-bottom: 15px;
 }
 
+/* Alterado para 100% no lugar de -webkit-fill-available para maior compatibilidade */
 input,
 button,
 select {
-    padding: 10px;
-    width: -webkit-fill-available;
+    padding: 12px;
+    width: 100%;
+    box-sizing: border-box; 
+    border-radius: 6px;
 }
 
-input[type="radio"] {
+input[type="radio"], 
+input[type="checkbox"] {
     width: auto;
 }
-

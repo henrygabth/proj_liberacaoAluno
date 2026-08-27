@@ -1,15 +1,15 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap');
 
 body {
     height: 100vh;
     margin: 0;
-    /* Mantenha o background-image, mas adicione position relative */
+    /* Mantendo a sua imagem de fundo */
     background-image: url('../img/senai_fundo.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    font-family: 'Poppins', sans-serif;
-    position: relative; /* Necessário para o overlay */
+    font-family: 'Montserrat', sans-serif;
+    position: relative; 
 }
 
 /* Adiciona o overlay escuro sobre o background */
@@ -20,8 +20,8 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Ajuste a opacidade (0.6) para mais ou menos escuro */
-    z-index: -1; /* Garante que o formulário fique por cima */
+    background-color: rgba(0, 0, 0, 0.6); /* Um pouco mais escuro para destacar o formulário branco */
+    z-index: -1; 
 }
 
 .centralize {
@@ -38,15 +38,15 @@ form {
     border-radius: 10px;
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
     position: relative;
-    z-index: 1; /* Garante que o formulário fique acima do overlay */
+    z-index: 1; 
 }
 
 form::before {
     content: "Acessar o sistema";
     display: block;
-    color: #2c3e50;
-    font-size: 24px;
-    font-weight: 600;
+    color: #0A192F; /* Azul escuro do tema */
+    font-size: 26px;
+    font-weight: 700;
     text-align: center;
     margin-bottom: 30px;
 }
@@ -62,35 +62,36 @@ form::before {
 input {
     width: 100%;
     padding: 12px 15px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+    border: 1px solid #cccccc;
+    border-radius: 6px;
     font-size: 14px;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Montserrat', sans-serif;
     box-sizing: border-box;
-    transition: border-color 0.3s ease;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
     outline: none;
 }
 
 input:focus {
-    border-color: rgb(255, 4, 19);
+    border-color: #0052cc;
+    box-shadow: 0 0 0 2px rgba(0, 82, 204, 0.1);
 }
 
 .enter-btn {
     width: 100%;
-    padding: 12px;
-    background-color: #d11010;
+    padding: 14px;
+    background-color: #0052cc; /* Azul primário */
     border: none;
-    border-radius: 5px;
+    border-radius: 6px;
     color: #fff;
     font-size: 16px;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
     transition: background-color 0.3s ease;
     margin-top: 10px;
 }
 
 .enter-btn:hover:not([disabled]) {
-    background-color: rgb(255, 4, 19);
+    background-color: #0040A8; /* Azul mais escuro ao passar o mouse */
 }
 
 .enter-btn[disabled] {
@@ -101,10 +102,10 @@ input:focus {
 .clear, .register-btn {
     background-color: transparent;
     border: none;
-    color: #7f8c8d;
-    font-family: 'Poppins', sans-serif;
+    color: #0052cc;
+    font-family: 'Montserrat', sans-serif;
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
     width: 100%;
     margin-top: 15px;
@@ -112,29 +113,31 @@ input:focus {
 }
 
 .clear:hover, .register-btn:hover {
-    color: rgb(255, 4, 19);
+    color: #0040A8;
 }
 
 .error {
-    background-color: #a40d0d;
+    background-color: #ff4d4d;
     color: white;
     text-align: center;
-    padding: 8px;
-    border-radius: 5px;
+    padding: 10px;
+    border-radius: 6px;
     margin-top: 5px;
     font-size: 13px;
     display: none;
+    box-shadow: 0 2px 5px rgba(255, 77, 77, 0.3);
 }
 
 .loading {
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.7);
     position: fixed;
     width: 100%;
     height: 100%;
     top: 0;
+    left: 0;
     display: flex;
     justify-content: center;
     align-items: center;
     color: white;
-    z-index: 1000;
+    z-index: 9999;
 }

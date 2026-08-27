@@ -52,7 +52,7 @@
 }
 
 .filter-select:focus {
-    border-color: #E52207; /* Cor SENAI Red */
+    border-color: #0052cc; /* Cor SENAI Blue */
 }
 
 /* Caixa de Status na Tela de Início */
