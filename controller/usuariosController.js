@@ -11,24 +11,26 @@ const { OAuth2Client } = require("google-auth-library");
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || "725327633780-mt7ue9m9s39dgcq4n80487s82aheh9aq.apps.googleusercontent.com";
 const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID);
 
-const EMAIL_SISTEMA = process.env.EMAIL_USER || "portariainteligente950@gmail.com";
+// Função para obter o transporter dinamicamente (garante leitura correta do process.env)
+function getTransporter() {
+    const emailUser = process.env.EMAIL_USER || "portariainteligente950@gmail.com";
+    const emailPass = process.env.EMAIL_PASS;
 
-// Transporter único utilizando configurações avançadas para estabilidade (IPv4 e STARTTLS)
-const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 587,
-    secure: false, // STARTTLS
-    family: 4,      // Força IPv4
-    tls: {
-        rejectUnauthorized: false
-    },
-    auth: {
-        user: EMAIL_SISTEMA,
-        pass: process.env.EMAIL_PASS
+    if (!emailPass) {
+        console.error("ALERTA: process.env.EMAIL_PASS nao esta definido no .env!");
     }
-});
 
-// Gera uma senha temporária aleatória
+    return nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true, // TLS/SSL direto na porta 465
+        auth: {
+            user: emailUser,
+            pass: emailPass
+        }
+    });
+}
+
 function gerarSenhaAleatoria() {
     return crypto.randomBytes(6).toString('base64')
         .replace(/[^a-zA-Z0-9]/g, '')
@@ -264,19 +266,42 @@ const usuariosController = {
 
             const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
             const linkRecuperacao = `${baseUrl}/reset_password.html?token=${tokenReset}`;
+            const emailSistema = process.env.EMAIL_USER || "portariainteligente950@gmail.com";
 
             const mailOptions = {
-                from: `"Controle de Saídas" <${EMAIL_SISTEMA}>`,
+                from: `"Controle de Saidas" <${emailSistema}>`,
                 to: usuario.email,
-                subject: '🔒 Redefinição de Senha - Controle de Saídas',
-                html: `<p>Olá <strong>${usuario.nome}</strong>, para redefinir sua senha acesse o link: <a href="${linkRecuperacao}">${linkRecuperacao}</a></p>`
+                subject: 'Redefinicao de Senha - Controle de Saidas',
+                text: `Olá ${usuario.nome}, acesse o link para redefinir sua senha: ${linkRecuperacao}`,
+                html: `
+                    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f4f6f8;">
+                        <div style="background-color: #ffffff; border-radius: 6px; padding: 25px; border: 1px solid #e0e0e0;">
+                            <h2 style="color: #1a202c; font-size: 18px; margin-top: 0; border-bottom: 2px solid #3182ce; padding-bottom: 8px;">
+                                Redefinição de Senha
+                            </h2>
+                            <p style="color: #4a5568; font-size: 14px;">Olá, <strong>${usuario.nome}</strong>.</p>
+                            <p style="color: #4a5568; font-size: 14px;">Você solicitou a redefinição de senha para a sua conta no Controle de Saídas. Clique no botão abaixo para criar uma nova senha:</p>
+                            <div style="text-align: center; margin: 25px 0;">
+                                <a href="${linkRecuperacao}" style="background-color: #3182ce; color: #ffffff; text-decoration: none; padding: 10px 20px; border-radius: 4px; font-weight: bold; display: inline-block;">
+                                    Redefinir Senha
+                                </a>
+                            </div>
+                            <p style="color: #718096; font-size: 12px; margin-bottom: 0;">Este link expira em 15 minutos. Se você não fez essa solicitação, pode ignorar este e-mail.</p>
+                        </div>
+                    </div>
+                `
             };
 
+            const transporter = getTransporter();
             await transporter.sendMail(mailOptions);
+
             return res.json({ mensagem: 'Se o e-mail estiver cadastrado, você receberá um link de redefinição.' });
         } catch (error) {
-            console.error('Erro ao enviar e-mail de recuperação:', error);
-            return res.status(500).json({ erro: 'Erro ao enviar e-mail de recuperação.' });
+            console.error('ERRO DETALHADO NO SMTP/NODEMAILER:', error);
+            return res.status(500).json({ 
+                erro: 'Erro ao enviar e-mail de recuperação.', 
+                detalhe: error.message 
+            });
         }
     },
 
@@ -325,21 +350,33 @@ const usuariosController = {
 
             let emailEnviado = true;
             try {
+                const emailSistema = process.env.EMAIL_USER || "portariainteligente950@gmail.com";
+                const transporter = getTransporter();
+
                 await transporter.sendMail({
-                    from: `"Controle de Saídas" <${EMAIL_SISTEMA}>`,
+                    from: `"Controle de Saidas" <${emailSistema}>`,
                     to: email,
-                    subject: '🏫 Sua conta de acesso foi criada',
+                    subject: 'Sua conta de acesso foi criada - Controle de Saidas',
+                    text: `Olá ${nome}, sua conta foi criada. E-mail: ${email} | Senha temporária: ${senhaTemporaria}`,
                     html: `
-                        <p>Olá <strong>${nome}</strong>,</p>
-                        <p>Uma conta foi criada para você no sistema de controle de saídas, vinculada ao aluno <strong>${nome_aluno}</strong>.</p>
-                        <p><strong>E-mail de acesso:</strong> ${email}<br>
-                           <strong>Senha temporária:</strong> ${senhaTemporaria}</p>
-                        <p>Recomendamos trocar essa senha assim que possível em "Minha Conta" após o primeiro acesso,
-                           ou pela opção "Esqueci minha senha" na tela de login.</p>
+                        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f4f6f8;">
+                            <div style="background-color: #ffffff; border-radius: 6px; padding: 25px; border: 1px solid #e0e0e0;">
+                                <h2 style="color: #1a202c; font-size: 18px; margin-top: 0; border-bottom: 2px solid #2b6cb0; padding-bottom: 8px;">
+                                    Bem-vindo ao Controle de Saídas
+                                </h2>
+                                <p style="color: #4a5568; font-size: 14px;">Olá, <strong>${nome}</strong>.</p>
+                                <p style="color: #4a5568; font-size: 14px;">Sua conta de responsável vinculada ao aluno <strong>${nome_aluno}</strong> foi cadastrada com sucesso.</p>
+                                <div style="background-color: #edf2f7; border-left: 4px solid #2b6cb0; padding: 12px 15px; margin: 20px 0;">
+                                    <p style="margin: 0 0 6px 0; color: #2d3748; font-size: 13px;"><strong>E-mail de acesso:</strong> ${email}</p>
+                                    <p style="margin: 0; color: #2d3748; font-size: 13px;"><strong>Senha temporária:</strong> <span style="font-family: monospace; font-weight: bold; background-color: #e2e8f0; padding: 2px 6px; border-radius: 3px;">${senhaTemporaria}</span></p>
+                                </div>
+                                <p style="color: #718096; font-size: 12px; margin-bottom: 0;">Recomendamos alterar sua senha após o primeiro acesso.</p>
+                            </div>
+                        </div>
                     `
                 });
             } catch (erroEmail) {
-                console.error('Erro ao enviar e-mail de boas-vindas:', erroEmail.message);
+                console.error('Erro ao enviar e-mail de boas-vindas:', erroEmail);
                 emailEnviado = false;
             }
 
