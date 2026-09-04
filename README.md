@@ -149,9 +149,10 @@ Este guia explica como você pode colaborar com melhorias, correções e novas f
    git checkout -b minha-feature
    ```
 3. **Implemente suas alterações**
-    -Mantenha o código limpo e organizado.
-    -Siga o padrão de nomenclatura já utilizado no projeto.
-    -Documente suas mudanças quando necessário.
+   
+    - Mantenha o código limpo e organizado.
+    - Siga o padrão de nomenclatura já utilizado no projeto.
+    - Documente suas mudanças quando necessário.
    
 4.Commit suas alterações 
 ```bash
